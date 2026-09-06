@@ -1,1179 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Yum Tasty !! - Rewards Hub</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Adsgram SDK Integration -->
-  <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
-  <style>
-    :root {
-      --bg-color: #000000;
-      --card-bg: #111111;
-      --card-border: #222222;
-      --accent-green: #00FF66;
-      --accent-glow: rgba(0, 255, 102, 0.25);
-      --text-main: #ffffff;
-      --text-muted: #888888;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: var(--text-main);
-    }
-
-    body {
-      background-color: var(--bg-color);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    /* Top Navigation Bar */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      border: 1px solid var(--accent-green);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: var(--accent-green);
-      overflow: hidden;
-    }
-
-    .user-info h4 {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .user-info p {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Balance / Ticket Box */
-    .balance-box {
-      background: #161616;
-      border: 1px solid var(--card-border);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .balance-box span.ton {
-      color: var(--accent-green);
-    }
-
-    .balance-box span.divider {
-      color: var(--text-muted);
-    }
-
-    .balance-box span.ticket {
-      color: var(--accent-green);
-    }
-
-    /* Main View Area */
-    .main-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      padding-bottom: 90px;
-    }
-
-    .tab-view {
-      display: none;
-    }
-
-    .tab-view.active {
-      display: block;
-    }
-
-    /* Cards */
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    /* Home View Styling */
-    .hero-banner {
-      background: linear-gradient(135deg, #0a1f12 0%, #050b07 100%);
-      border: 1px solid rgba(0, 255, 102, 0.3);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 20px var(--accent-glow);
-    }
-
-    .hero-banner h2 {
-      font-size: 20px;
-      margin-bottom: 8px;
-    }
-
-    .hero-banner p {
-      font-size: 13px;
-      color: #a3e6b5;
-      margin-bottom: 16px;
-    }
-
-    .primary-btn {
-      background: var(--accent-green);
-      color: #000000;
-      border: none;
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 4px 15px var(--accent-glow);
-      transition: transform 0.1s;
-    }
-
-    .primary-btn:active {
-      transform: scale(0.98);
-    }
-
-    .daily-checkin-preview {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    /* Tasks List Styles */
-    .tasks-container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .task-item {
-      background: #161616;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .task-info h5 {
-      font-size: 14px;
-      margin-bottom: 2px;
-    }
-
-    .task-info p {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .task-btn {
-      background: var(--accent-green);
-      color: #000;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .task-btn:disabled {
-      background: #262626;
-      color: #888888;
-      cursor: not-allowed;
-    }
-
-    /* Wallet Page */
-    .wallet-balance-card {
-      text-align: center;
-      padding: 24px 16px;
-    }
-
-    .wallet-balance-card h1 {
-      font-size: 32px;
-      margin: 8px 0;
-      color: var(--accent-green);
-    }
-
-    .wallet-balance-card p {
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    .progress-bar-container {
-      background: #1a1a1a;
-      border-radius: 8px;
-      height: 8px;
-      width: 100%;
-      margin: 16px 0;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      background: var(--accent-green);
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      font-size: 13px;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .info-row:last-child {
-      border-bottom: none;
-    }
-
-    .info-row span {
-      color: var(--text-muted);
-    }
-
-    /* Spin Wheel View matching reference design */
-    .wheel-outer-ring {
-      position: relative;
-      margin: 20px auto;
-      width: 290px;
-      height: 290px;
-      border-radius: 50%;
-      background: #152818;
-      border: 8px solid #234c2a;
-      box-shadow: 0 0 25px var(--accent-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .rim-pin {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: #ffffff;
-      border-radius: 50%;
-      z-index: 5;
-    }
-
-    .wheel-container {
-      position: relative;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-      overflow: hidden;
-      transition: transform 4s cubic-bezier(0.15, 0.95, 0.15, 1);
-    }
-
-    .wheel-slice {
-      position: absolute;
-      width: 50%;
-      height: 50%;
-      transform-origin: 100% 100%;
-      left: 0;
-      top: 0;
-    }
-
-    .slice-text {
-      position: absolute;
-      font-size: 10px;
-      font-weight: 800;
-      color: #ffffff;
-      text-align: center;
-      width: 65px;
-      transform: rotate(30deg);
-      z-index: 3;
-    }
-
-    .wheel-pointer {
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-bottom: 24px solid #ffcc00;
-      z-index: 20;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-    }
-
-    .wheel-center-hub {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 75px;
-      height: 75px;
-      background: radial-gradient(circle, #3b82f6 0%, #1d4ed8 100%);
-      border: 4px solid #ffffff;
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 900;
-      color: #ffffff;
-      z-index: 15;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      cursor: pointer;
-    }
-
-    .wheel-center-hub small {
-      font-size: 8px;
-      color: #e0e7ff;
-    }
-
-    .wheel-label-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .wheel-prize-tag {
-      background: #161616;
-      border: 1px solid var(--card-border);
-      padding: 6px;
-      border-radius: 8px;
-    }
-
-    /* Leaderboard Tabs */
-    .lb-tabs {
-      display: flex;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 16px;
-    }
-
-    .lb-tab {
-      flex: 1;
-      text-align: center;
-      padding: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: 0.2s;
-    }
-
-    .lb-tab.active {
-      background: var(--accent-green);
-      color: #000000;
-    }
-
-    .leaderboard-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .lb-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 10px 14px;
-      border-radius: 12px;
-    }
-
-    .lb-user-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .lb-rank {
-      font-weight: bold;
-      font-size: 14px;
-      width: 24px;
-      text-align: center;
-      color: var(--text-muted);
-    }
-
-    .lb-rank.top-1 { color: var(--accent-green); }
-    .lb-rank.top-2 { color: #aaaaaa; }
-    .lb-rank.top-3 { color: #666666; }
-
-    .lb-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-
-    .lb-name h5 {
-      font-size: 14px;
-    }
-
-    .lb-name p {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .lb-score {
-      font-weight: bold;
-      font-size: 13px;
-      color: var(--accent-green);
-    }
-
-    /* Bottom Navigation Bar */
-    .nav-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--card-bg);
-      border-top: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      z-index: 100;
-    }
-
-    .nav-item {
-      background: none;
-      border: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--text-muted);
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .nav-item.active {
-      color: var(--accent-green);
-    }
-
-    .nav-item svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-
-    /* Modal Popups */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 16px;
-    }
-
-    .modal-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      width: 100%;
-      max-width: 340px;
-      border-radius: 20px;
-      padding: 24px;
-      text-align: center;
-      position: relative;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #1a1a1a;
-      border: none;
-      color: white;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .checkin-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin: 16px 0;
-    }
-
-    .checkin-day {
-      background: #161616;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 10px 4px;
-      font-size: 11px;
-    }
-
-    .checkin-day.completed {
-      background: rgba(0, 255, 102, 0.1);
-      border-color: var(--accent-green);
-      color: var(--accent-green);
-    }
-
-    .checkin-day.active-day {
-      border-color: var(--accent-green);
-      box-shadow: 0 0 10px var(--accent-glow);
-    }
-
-    .withdraw-form {
-      text-align: left;
-      margin: 14px 0;
-    }
-
-    .withdraw-form label {
-      font-size: 12px;
-      color: var(--text-muted);
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .withdraw-input-group {
-      display: flex;
-      background: #161616;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .withdraw-input-group input {
-      background: transparent;
-      border: none;
-      outline: none;
-      width: 100%;
-      font-size: 14px;
-      color: white;
-    }
-
-    .asset-tag {
-      font-size: 12px;
-      font-weight: bold;
-      color: var(--accent-green);
-      background: rgba(0, 255, 102, 0.1);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yum Tasty Rewards Hub</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Official Adsgram SDK -->
+    <script src="https://sad.adsgram.org/js/adsgram.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0c0f0a;
+            --card-bg: #161b12;
+            --accent-green: #00ff87;
+            --accent-purple: #8338ec;
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 90px;
+        }
+
+        /* Header / Balance Bar */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 16px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-green);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .balances {
+            display: flex;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .ton-val { color: var(--accent-green); }
+        .ticket-val { color: #00f0ff; }
+
+        /* Tab Content Views */
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
+        }
+
+        /* Spin Wheel Layout Revamp */
+        .spin-hub {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .marquee-banner {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--accent-green);
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        .timer-display {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #ffaa00;
+            margin-bottom: 16px;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 310px;
+            height: 310px;
+            margin: 0 auto 20px auto;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 26px solid #ffcc00;
+            z-index: 20;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .wheel-canvas-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid #1e291b;
+            box-shadow: 0 0 25px rgba(0, 255, 135, 0.2);
+            position: relative;
+            overflow: hidden;
+            background: #111;
+            transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
+        }
+
+        /* Conic Gradient Wheel Segments simulating the reference design */
+        .wheel-slices {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #00f0ff 0deg 45deg,
+                #8338ec 45deg 90deg,
+                #ff007f 90deg 135deg,
+                #ffaa00 135deg 180deg,
+                #00ff87 180deg 225deg,
+                #ff3333 225deg 270deg,
+                #3a86ff 270deg 315deg,
+                #fb5607 315deg 360deg
+            );
+        }
+
+        .wheel-center-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85px;
+            height: 85px;
+            background: radial-gradient(circle, #222 60%, #111 100%);
+            border: 4px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            cursor: pointer;
+        }
+
+        .wheel-center-btn span:first-child {
+            font-size: 14px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .wheel-center-btn span:last-child {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .action-cta-btn {
+            width: 100%;
+            max-width: 340px;
+            background: linear-gradient(90deg, #00ff87, #60efff);
+            color: #05160a;
+            font-weight: 800;
+            font-size: 16px;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 255, 135, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        /* Navigation Bottom Bar */
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--card-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--accent-green);
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="top-bar">
-    <div class="user-profile">
-      <div class="user-avatar" id="userAvatarContainer">U</div>
-      <div class="user-info">
-        <h4 id="userNameDisplay">User</h4>
-        <p id="userHandleDisplay">@username</p>
-      </div>
-    </div>
-    <div class="balance-box">
-      <span class="ton" id="topBalance">0.0000 TON</span>
-      <span class="divider">/</span>
-      <span class="ticket" id="topTickets">💎 5 Tickets</span>
-    </div>
-  </div>
-
-  <div class="main-content">
-
-    <!-- HOME VIEW -->
-    <div id="view-home" class="tab-view active">
-      <div class="hero-banner">
-        <h2>⚡ Yum Tasty Rewards Hub</h2>
-        <p>Watch sponsored partner ads to earn assets and tickets securely!</p>
-        <button class="primary-btn" onclick="openCheckinModal()">Daily Check-in 📅</button>
-      </div>
-
-      <div class="card" onclick="openCheckinModal()" style="cursor: pointer;">
-        <div class="daily-checkin-preview">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="font-size: 28px;">📅</div>
-            <div>
-              <h4 style="font-size: 15px;">Daily Check-in Active</h4>
-              <p style="font-size: 12px; color: var(--text-muted);">Claim 0.01 TON + 1 Ticket daily</p>
+    <div class="app-container">
+        <!-- Top Sticky Header -->
+        <div class="header-bar">
+            <div class="user-pill">
+                <div class="avatar" id="userInitial">W</div>
+                <span id="userName">Whiffy</span>
             </div>
-          </div>
-          <span style="color: var(--accent-green); font-weight: bold;">Claim →</span>
+            <div class="balances">
+                <span class="ton-val" id="tonBalance">16.0300 TON</span>
+                <span class="ticket-val" id="ticketBalance">💎 5 Tickets</span>
+            </div>
         </div>
-      </div>
 
-      <div class="card">
-        <h4 style="margin-bottom: 6px; font-size: 15px;">🚀 Partner Tasks (30 Active)</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Complete 3 ad cycles per task to earn 0.01 TON + 1 Ticket. 2h reset cooldown applies.</p>
-        <div class="tasks-container" id="tasksListContainer"></div>
-      </div>
+        <!-- HOME / TASKS VIEW -->
+        <div id="homeView" class="view-section">
+            <div style="background: var(--card-bg); border-radius: 16px; padding: 18px; border: 1px solid rgba(255,255,255,0.06); text-align: center;">
+                <h2 style="font-size: 18px; margin-bottom: 6px;">⚡ Yum Tasty Rewards Hub</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Watch sponsored partner ads to earn assets securely!</p>
+                <button class="action-cta-btn" onclick="triggerAdsgramInterstitial()">Daily Check-in 📅</button>
+            </div>
+        </div>
+
+        <!-- SPIN WHEEL VIEW (Revamped Layout) -->
+        <div id="spinView" class="view-section active">
+            <div class="spin-hub">
+                <div class="marquee-banner">🔥 Wow You won 1 ETH already</div>
+                <div class="timer-display" id="spinCountdown">End in 07D : 15H : 20M : 06S</div>
+
+                <div class="wheel-wrapper">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel-canvas-container" id="wheelCanvas">
+                        <div class="wheel-slices"></div>
+                    </div>
+                    <div class="wheel-center-btn" onclick="spinTheWheel()">
+                        <span>SPIN</span>
+                        <span id="spinCostLabel">7 Ticks</span>
+                    </div>
+                </div>
+
+                <button class="action-cta-btn" onclick="spinTheWheel()">Invite for more Spins</button>
+            </div>
+        </div>
+
+        <!-- WALLET VIEW -->
+        <div id="walletView" class="view-section">
+            <div style="text-align: center; padding-top: 40px;">
+                <h3>Your Wallet Assets</h3>
+                <p style="color: var(--accent-green); font-size: 24px; font-weight: bold; margin-top: 10px;">16.0300 TON</p>
+            </div>
+        </div>
+
+        <!-- INVITE VIEW -->
+        <div id="inviteView" class="view-section">
+            <div style="text-align: center; padding-top: 40px;">
+                <h3>Referral Program</h3>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Invite friends to earn bonus spin tickets instantly.</p>
+            </div>
+        </div>
+
+        <!-- RANK VIEW -->
+        <div id="rankView" class="view-section">
+            <div style="text-align: center; padding-top: 40px;">
+                <h3>Global Leaderboard</h3>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Top earners compete weekly for huge rewards.</p>
+            </div>
+        </div>
     </div>
 
-    <!-- SPIN VIEW -->
-    <div id="view-spin" class="tab-view">
-      <div class="card" style="text-align: center;">
-        <h3 style="margin-bottom: 4px;">Lucky Spin Wheel</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Cost: 7 tickets per spin. Try your luck!</p>
-        
-        <div class="wheel-outer-ring" id="wheelOuterRing">
-          <div class="wheel-pointer"></div>
-          <div class="wheel-container" id="wheelElement">
-            <!-- 6 Slices matching reference layout precisely -->
-            <div class="wheel-slice" style="transform: rotate(0deg); background: #3b82f6;"><span class="slice-text" style="top: 25px; left: 45px;">0.01$</span></div>
-            <div class="wheel-slice" style="transform: rotate(60deg); background: #ec4899;"><span class="slice-text" style="top: 25px; left: 45px;">0.02$</span></div>
-            <div class="wheel-slice" style="transform: rotate(120deg); background: #eab308;"><span class="slice-text" style="top: 25px; left: 38px;">Try Again</span></div>
-            <div class="wheel-slice" style="transform: rotate(180deg); background: #84cc16;"><span class="slice-text" style="top: 25px; left: 35px;">Better Luck</span></div>
-            <div class="wheel-slice" style="transform: rotate(240deg); background: #06b6d4;"><span class="slice-text" style="top: 25px; left: 40px;">Free Spin</span></div>
-            <div class="wheel-slice" style="transform: rotate(300deg); background: #a855f7;"><span class="slice-text" style="top: 25px; left: 45px;">0.05$</span></div>
-          </div>
-          <div class="wheel-center-hub" onclick="spinWheel()">
-            <span>SPIN</span>
-            <small>7 Ticks</small>
-          </div>
-        </div>
+    <!-- Bottom Navigation Bar -->
+    <nav class="nav-bar">
+        <button class="nav-item" onclick="switchTab('home', this)">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Home
+        </button>
+        <button class="nav-item active" onclick="switchTab('spin', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            Spin
+        </button>
+        <button class="nav-item" onclick="switchTab('wallet', this)">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            Wallet
+        </button>
+        <button class="nav-item" onclick="switchTab('invite', this)">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            Invite
+        </button>
+        <button class="nav-item" onclick="switchTab('rank', this)">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            Rank
+        </button>
+    </nav>
 
-        <div class="wheel-label-grid">
-          <div class="wheel-prize-tag">0.01$</div>
-          <div class="wheel-prize-tag">0.02$</div>
-          <div class="wheel-prize-tag">Try Again</div>
-          <div class="wheel-prize-tag">Better Luck</div>
-          <div class="wheel-prize-tag">Free Spin</div>
-          <div class="wheel-prize-tag">0.05$</div>
-        </div>
+    <script>
+        // Initialize Telegram WebApp Context
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
 
-        <p id="spinStatus" style="font-size: 13px; margin: 10px 0; font-weight: 600; color: var(--accent-green);">5 Tickets Available</p>
-        <button class="primary-btn" onclick="spinWheel()">SPIN THE WHEEL</button>
-      </div>
-    </div>
+        let currentRotation = 0;
+        let isSpinning = false;
+        let adsController = null;
 
-    <!-- WALLET VIEW -->
-    <div id="view-wallet" class="tab-view">
-      <div class="card wallet-balance-card">
-        <p>MY BALANCE</p>
-        <h1 id="walletBalanceBig">0.0000 TON</h1>
-        <p id="withdrawLimitText">0.0000 / 5.00 TON (0%)</p>
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
-        </div>
-        <button class="primary-btn" onclick="openWithdrawalModal()" style="margin-top: 10px;">Request Withdrawal</button>
-      </div>
-
-      <div class="card">
-        <h4 style="margin-bottom: 12px; font-size: 14px;">WITHDRAWAL INFO</h4>
-        <div class="info-row">
-          <span>Minimum Payout</span>
-          <strong style="color: white;">5.00 TON <span style="color: var(--accent-green); font-size: 11px;">🔒 Secure Limit</span></strong>
-        </div>
-        <div class="info-row">
-          <span>Payout Speed</span>
-          <strong style="color: white;">Within 24 hours</strong>
-        </div>
-        <div class="info-row">
-          <span>Network</span>
-          <strong style="color: white;">TON Blockchain (On-chain)</strong>
-        </div>
-      </div>
-    </div>
-
-    <!-- INVITE VIEW -->
-    <div id="view-invite" class="tab-view">
-      <div class="hero-banner">
-        <h2>Invite Friends & Earn</h2>
-        <p>Get 1 Ticket + 10% commission for every active referral joining your link.</p>
-        <button class="primary-btn" onclick="copyInviteLink()">Copy Referral Link</button>
-      </div>
-    </div>
-
-    <!-- RANK VIEW -->
-    <div id="view-rank" class="tab-view">
-      <div class="lb-tabs">
-        <div class="lb-tab active" id="tabReferrals" onclick="switchLb('referrals')">Most Referrals</div>
-        <div class="lb-tab" id="tabEarned" onclick="switchLb('earned')">Most Earned ($)</div>
-      </div>
-
-      <div class="leaderboard-list" id="leaderboardContainer"></div>
-    </div>
-
-  </div>
-
-  <div class="nav-bar">
-    <button class="nav-item active" onclick="switchTab('home', this)">
-      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      Home
-    </button>
-    <button class="nav-item" onclick="switchTab('spin', this)">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-      Spin
-    </button>
-    <button class="nav-item" onclick="switchTab('wallet', this)">
-      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-      Wallet
-    </button>
-    <button class="nav-item" onclick="switchTab('invite', this)">
-      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-      Invite
-    </button>
-    <button class="nav-item" onclick="switchTab('rank', this)">
-      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-      Rank
-    </button>
-  </div>
-
-  <!-- CHECKIN MODAL -->
-  <div class="modal-overlay" id="checkinModal">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeCheckinModal()">×</button>
-      <div style="font-size: 32px; margin-bottom: 8px;">📅</div>
-      <h3>Daily Check-in</h3>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Watch ad to claim 0.01 TON & 1 Ticket!</p>
-      
-      <div class="checkin-grid" id="checkinGrid"></div>
-
-      <button class="primary-btn" onclick="claimDailyCheckin()">Watch Ad to Claim 0.01 TON</button>
-    </div>
-  </div>
-
-  <!-- WITHDRAWAL MODAL -->
-  <div class="modal-overlay" id="withdrawalModal">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeWithdrawalModal()">×</button>
-      <div style="font-size: 32px; margin-bottom: 6px;">💎</div>
-      <h3 style="margin-bottom: 4px;">Request Payout</h3>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Secure on-chain transfer to your wallet address.</p>
-      
-      <div class="withdraw-form">
-        <label>Destination TON Address</label>
-        <div class="withdraw-input-group">
-          <input type="text" id="tonAddressInput" placeholder="UQ... or EQ...">
-          <span class="asset-tag">TON</span>
-        </div>
-      </div>
-
-      <button class="primary-btn" onclick="submitWithdrawal()">Confirm Withdrawal</button>
-    </div>
-  </div>
-
-  <script>
-    // Adsgram Block IDs Integration
-    const REWARD_BLOCK_ID = "46463";
-    const INTERSTITIAL_BLOCK_ID = "int-46465";
-
-    let adController = null;
-    let interstitialController = null;
-
-    // Persistent State Management (Starts at 0.0000 balance!)
-    let userState = {
-      userId: "default_user",
-      balance: 0.0000,
-      tickets: 5,
-      taskProgress: {}
-    };
-
-    function saveState() {
-      localStorage.setItem(`yum_tasty_state_${userState.userId}`, JSON.stringify(userState));
-    }
-
-    function loadState(id) {
-      userState.userId = id;
-      const saved = localStorage.getItem(`yum_tasty_state_${id}`);
-      if (saved) {
+        // Initialize Adsgram safe controller block
         try {
-          const parsed = JSON.parse(saved);
-          userState.balance = parsed.balance ?? 0.0000;
-          userState.tickets = parsed.tickets ?? 5;
-          userState.taskProgress = parsed.taskProgress ?? {};
+            if (window.Adsgram) {
+                adsController = window.Adsgram.init({ blockId: "int-46465" });
+            }
         } catch (e) {
-          console.error("Storage corruption, loading defaults", e);
-        }
-      }
-    }
-
-    const referralLeaders = [
-      { rank: 1, name: "Faraz⚡", handle: "@Coto_Trader", score: "4,210 referrals", avatar: "👨‍💻" },
-      { rank: 2, name: "Lucas", handle: "@maybe00089", score: "3,890 referrals", avatar: "👦" },
-      { rank: 3, name: "Meysam", handle: "@Meysam5735", score: "2,450 referrals", avatar: "🧔" },
-      { rank: 4, name: "Mohammad", handle: "@Mohi_seven7", score: "1,890 referrals", avatar: "⚡" },
-      { rank: 5, name: "Mr. Jabri", handle: "@mrjabri", score: "1,200 referrals", avatar: "🎩" }
-    ];
-
-    const earnedLeaders = [
-      { rank: 1, name: "Alex Crypto", handle: "@alex_TON", score: "$486.20", avatar: "💎" },
-      { rank: 2, name: "SatoshiKing", handle: "@satoshi_99", score: "$442.50", avatar: "👑" },
-      { rank: 3, name: "Elena V.", handle: "@elena_trader", score: "$415.00", avatar: "👩‍🰰" },
-      { rank: 4, name: "Dmitry", handle: "@dmitry_TON", score: "$389.40", avatar: "🚀" },
-      { rank: 5, name: "CryptoNinja", handle: "@ninja_x", score: "$342.10", avatar: "🥷" }
-    ];
-
-    let currentLbType = 'referrals';
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-          const user = tg.initDataUnsafe.user;
-          document.getElementById('userNameDisplay').innerText = user.first_name || 'User';
-          document.getElementById('userHandleDisplay').innerText = user.username ? `@${user.username}` : '@yum_user';
-          document.getElementById('userAvatarContainer').innerText = (user.first_name || 'U')[0].toUpperCase();
-          loadState(String(user.id));
-        }
-      }
-
-      if (window.Adsgram) {
-        adController = window.Adsgram.init({ blockId: REWARD_BLOCK_ID });
-        interstitialController = window.Adsgram.init({ blockId: INTERSTITIAL_BLOCK_ID });
-      }
-
-      buildWheelPins();
-      renderTasksList();
-      renderLeaderboard();
-      updateUI();
-      buildCheckinGrid();
-
-      // Interval checking 2-hour task cooldown resets
-      setInterval(checkTaskResets, 1000);
-    });
-
-    function buildWheelPins() {
-      const ring = document.getElementById('wheelOuterRing');
-      const count = 12;
-      const radius = 132;
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * 2 * Math.PI;
-        const x = radius + radius * Math.cos(angle);
-        const y = radius + radius * Math.sin(angle);
-        const pin = document.createElement('div');
-        pin.className = 'rim-pin';
-        pin.style.left = `${x}px`;
-        pin.style.top = `${y}px`;
-        ring.appendChild(pin);
-      }
-    }
-
-    function updateUI() {
-      document.getElementById('topBalance').innerText = `${userState.balance.toFixed(4)} TON`;
-      document.getElementById('topTickets').innerText = `💎 ${userState.tickets} Tickets`;
-      document.getElementById('walletBalanceBig').innerText = `${userState.balance.toFixed(4)} TON`;
-      document.getElementById('spinStatus').innerText = `${userState.tickets} Tickets Available`;
-      
-      const minPayout = 5.00;
-      const progressPercent = Math.min(100, (userState.balance / minPayout) * 100);
-      document.getElementById('progressBarFill').style.width = `${progressPercent}%`;
-      document.getElementById('withdrawLimitText').innerText = `${userState.balance.toFixed(4)} / ${minPayout.toFixed(2)} TON (${progressPercent.toFixed(0)}%)`;
-      saveState();
-    }
-
-    function switchTab(tabId, btnElement) {
-      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(`view-${tabId}`).classList.add('active');
-      btnElement.classList.add('active');
-    }
-
-    function openCheckinModal() {
-      document.getElementById('checkinModal').style.display = 'flex';
-    }
-    function closeCheckinModal() {
-      document.getElementById('checkinModal').style.display = 'none';
-    }
-
-    function openWithdrawalModal() {
-      const minPayout = 5.00;
-      if (userState.balance < minPayout) {
-        alert(`Minimum withdrawal threshold is ${minPayout} TON. Keep completing tasks to unlock payout!`);
-        return;
-      }
-      document.getElementById('withdrawalModal').style.display = 'flex';
-    }
-    function closeWithdrawalModal() {
-      document.getElementById('withdrawalModal').style.display = 'none';
-    }
-
-    function buildCheckinGrid() {
-      const grid = document.getElementById('checkinGrid');
-      let html = '';
-      for (let i = 1; i <= 7; i++) {
-        const isCompleted = i === 1 ? 'completed' : '';
-        const isActive = i === 2 ? 'active-day' : '';
-        html += `<div class="checkin-day ${isCompleted} ${isActive}">Day ${i}<br><strong>+0.01</strong></div>`;
-      }
-      grid.innerHTML = html;
-    }
-
-    function claimDailyCheckin() {
-      if (adController) {
-        adController.show().then(() => {
-          userState.balance += 0.01;
-          userState.tickets += 1;
-          updateUI();
-          closeCheckinModal();
-          alert("Ad watched successfully! Claimed 0.01 TON + 1 Ticket.");
-        }).catch((err) => {
-          console.error("Adsgram error:", err);
-          alert("Ad was closed early or unavailable. Please watch the full ad to claim your reward.");
-        });
-      } else {
-        alert("Adsgram SDK is loading or unavailable in this environment.");
-      }
-    }
-
-    function renderTasksList() {
-      const container = document.getElementById('tasksListContainer');
-      let html = '';
-      const now = Date.now();
-
-      for (let i = 1; i <= 30; i++) {
-        const taskId = `task_${i}`;
-        if (!userState.taskProgress[taskId]) {
-          userState.taskProgress[taskId] = { views: 0, unlockAt: 0 };
+            console.warn("Adsgram SDK failed to initialize immediately:", e);
         }
 
-        const taskData = userState.taskProgress[taskId];
-        const isLocked = now < taskData.unlockAt;
-
-        let btnText = `Watch Ad (${taskData.views}/3)`;
-        if (isLocked) {
-          const remainingSec = Math.ceil((taskData.unlockAt - now) / 1000);
-          const mins = Math.floor(remainingSec / 60);
-          const secs = remainingSec % 60;
-          btnText = `Locked (${mins}m ${secs}s)`;
+        async function triggerAdsgramInterstitial() {
+            if (adsController) {
+                try {
+                    await adsController.show();
+                } catch (err) {
+                    console.error("Interstitial ad trigger error:", err);
+                    window.Telegram.WebApp.showAlert("Ad unavailable right now. Try again later.");
+                }
+            } else {
+                // Fallback attempt if script was delayed
+                if (window.Adsgram) {
+                    try {
+                        adsController = window.Adsgram.init({ blockId: "int-46465" });
+                        await adsController.show();
+                        return;
+                    } catch (ex) { console.error(ex); }
+                }
+                window.Telegram.WebApp.showAlert("Adsgram SDK is unavailable in this environment. Please open via Telegram Bot button.");
+            }
         }
 
-        html += `
-          <div class="task-item">
-            <div class="task-info">
-              <h5>Partner Campaign #${i}</h5>
-              <p>${isLocked ? 'Cooldown Active (2h reset)' : `Reward: 0.01 TON + 1 Ticket (${taskData.views}/3 Views)`}</p>
-            </div>
-            <button class="task-btn" ${isLocked ? 'disabled' : ''} onclick="executeTaskAd('${taskId}')">
-              ${btnText}
-            </button>
-          </div>
-        `;
-      }
-      container.innerHTML = html;
-    }
+        function switchTab(tabId, element) {
+            // Trigger interstitial ad check on tab switching as requested
+            triggerAdsgramInterstitial();
 
-    // Check task resets every second and notify professionally
-    function checkTaskResets() {
-      const now = Date.now();
-      let needsRerender = false;
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-      for (let i = 1; i <= 30; i++) {
-        const taskId = `task_${i}`;
-        const taskData = userState.taskProgress[taskId];
-        if (taskData && taskData.unlockAt > 0 && now >= taskData.unlockAt) {
-          taskData.unlockAt = 0;
-          taskData.views = 0;
-          needsRerender = true;
-
-          // Professional Notification Message from Bot
-          const msg = `🔔 [Yum Tasty Bot Notification]\n\nPartner Campaign #${i} limit has successfully reset! You can now watch ads again to claim your 0.01 TON and 1 Ticket reward.`;
-          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showPopup) {
-            window.Telegram.WebApp.showPopup({
-              title: "Task Limit Reset",
-              message: msg,
-              buttons: [{ type: "ok", text: "Start Earning" }]
-            });
-          } else {
-            console.log(msg);
-          }
+            document.getElementById(tabId + 'View').classList.add('active');
+            element.classList.add('active');
         }
-      }
 
-      if (needsRerender) {
-        renderTasksList();
-        saveState();
-      } else {
-        // Just update countdown timer labels live without re-rendering if desired, or lightweight render
-        // To avoid heavy re-renders every second, we update button texts directly if elements exist
-        updateTaskTimersLive(now);
-      }
-    }
+        function spinTheWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
 
-    function updateTaskTimersLive(now) {
-      for (let i = 1; i <= 30; i++) {
-        const taskId = `task_${i}`;
-        const taskData = userState.taskProgress[taskId];
-        if (taskData && taskData.unlockAt > 0) {
-          const remainingSec = Math.ceil((taskData.unlockAt - now) / 1000);
-          if (remainingSec > 0) {
-            const mins = Math.floor(remainingSec / 60);
-            const secs = remainingSec % 60;
-            // Find button or reload if needed
-          }
+            const wheel = document.getElementById('wheelCanvas');
+            const randomDegree = Math.floor(1440 + Math.random() * 1080); // 4+ full rotations
+            currentRotation += randomDegree;
+            
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                isSpinning = false;
+                window.Telegram.WebApp.showAlert("Congratulations! You won bonus rewards!");
+            }, 4000);
         }
-      }
-    }
-
-    function executeTaskAd(taskId) {
-      const taskData = userState.taskProgress[taskId];
-      if (Date.now() < taskData.unlockAt) return;
-
-      if (adController) {
-        adController.show().then(() => {
-          taskData.views++;
-          if (taskData.views >= 3) {
-            userState.balance += 0.01;
-            userState.tickets += 1;
-            // Set 2 hour cooldown (2 * 60 * 60 * 1000 ms)
-            taskData.unlockAt = Date.now() + 7200000; 
-            alert("Task completed successfully! 0.01 TON and 1 Ticket credited. Task is now locked for 2 hours.");
-          } else {
-            alert(`Ad watched successfully! Complete ${3 - taskData.views} more view(s) to claim reward.`);
-          }
-          renderTasksList();
-          updateUI();
-        }).catch((err) => {
-          console.error("Adsgram error:", err);
-          alert("Ad was closed early or unavailable. Watch the complete ad to advance progress.");
-        });
-      } else {
-        alert("Adsgram SDK is unavailable in this environment. Please test inside Telegram.");
-      }
-    }
-
-    function spinWheel() {
-      if (userState.tickets < 7) {
-        alert("Not enough tickets! You need 7 tickets to spin.");
-        return;
-      }
-      userState.tickets -= 7;
-      updateUI();
-
-      const wheel = document.getElementById('wheelElement');
-      
-      const outcomes = [
-        { name: "0.01$", reward: 0.01, ticketBonus: 0, rot: 30 },
-        { name: "0.02$", reward: 0.02, ticketBonus: 0, rot: 90 },
-        { name: "Try Again (No Money)", reward: 0, ticketBonus: 0, rot: 150 },
-        { name: "Better Luck Next Time", reward: 0, ticketBonus: 0, rot: 210 },
-        { name: "Free Spin! (No Money)", reward: 0, ticketBonus: 1, rot: 270 },
-        { name: "0.05$", reward: 0.05, ticketBonus: 0, rot: 330 }
-      ];
-
-      const randIndex = Math.random();
-      let chosen;
-      if (randIndex < 0.30) chosen = outcomes[2];
-      else if (randIndex < 0.60) chosen = outcomes[3];
-      else if (randIndex < 0.75) chosen = outcomes[4];
-      else if (randIndex < 0.90) chosen = outcomes[0];
-      else if (randIndex < 0.98) chosen = outcomes[1];
-      else chosen = outcomes[5];
-
-      const randomSpins = 1800;
-      const targetRotation = randomSpins + (360 - chosen.rot);
-      wheel.style.transform = `rotate(${targetRotation}deg)`;
-
-      setTimeout(() => {
-        if (chosen.reward > 0) {
-          userState.balance += chosen.reward;
-        }
-        if (chosen.ticketBonus > 0) {
-          userState.tickets += chosen.ticketBonus;
-        }
-        updateUI();
-        alert(`Spin Result: ${chosen.name}`);
-      }, 4000);
-    }
-
-    function switchLb(type) {
-      currentLbType = type;
-      document.getElementById('tabReferrals').classList.toggle('active', type === 'referrals');
-      document.getElementById('tabEarned').classList.toggle('active', type === 'earned');
-      renderLeaderboard();
-    }
-
-    function renderLeaderboard() {
-      const container = document.getElementById('leaderboardContainer');
-      const list = currentLbType === 'referrals' ? referralLeaders : earnedLeaders;
-      let html = '';
-      
-      list.forEach((item, idx) => {
-        let rankClass = '';
-        if (idx === 0) rankClass = 'top-1';
-        else if (idx === 1) rankClass = 'top-2';
-        else if (idx === 2) rankClass = 'top-3';
-
-        html += `
-          <div class="lb-item">
-            <div class="lb-user-left">
-              <span class="lb-rank ${rankClass}">#${item.rank}</span>
-              <div class="lb-avatar">${item.avatar}</div>
-              <div class="lb-name">
-                <h5>${item.name}</h5>
-                <p>${item.handle}</p>
-              </div>
-            </div>
-            <span class="lb-score">${item.score}</span>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-    }
-
-    function submitWithdrawal() {
-      const address = document.getElementById('tonAddressInput').value.trim();
-      if (!address || address.length < 10) {
-        alert("Please enter a valid TON wallet address (UQ... or EQ...).");
-        return;
-      }
-      const amountToWithdraw = userState.balance;
-      userState.balance = 0.0000;
-      updateUI();
-      closeWithdrawalModal();
-      alert(`Withdrawal request for ${amountToWithdraw.toFixed(4)} TON submitted successfully! Payout will process within 24 hours to ${address}.`);
-    }
-
-    function copyInviteLink() {
-      const refLink = `https://t.me/YumTastyTasks_bot?start=ref_${userState.userId}`;
-      navigator.clipboard.writeText(refLink);
-      alert("Referral link copied to clipboard!");
-    }
-  </script>
+    </script>
 </body>
 </html>
