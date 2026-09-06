@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Yum Tasty !! - Rewards Hub</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Adsgram SDK Integration -->
+  <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
   <style>
     :root {
       --bg-color: #000000;
@@ -169,6 +171,51 @@
       cursor: pointer;
     }
 
+    /* Tasks List Styles */
+    .tasks-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .task-item {
+      background: #161616;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-info h5 {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .task-info p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .task-btn {
+      background: var(--accent-green);
+      color: #000;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .task-btn:disabled {
+      background: #333;
+      color: #777;
+      cursor: not-allowed;
+    }
+
     /* Wallet Page */
     .wallet-balance-card {
       text-align: center;
@@ -268,6 +315,22 @@
       font-size: 12px;
       font-weight: bold;
       color: var(--accent-green);
+    }
+
+    .wheel-label-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .wheel-prize-tag {
+      background: #161616;
+      border: 1px solid var(--card-border);
+      padding: 6px;
+      border-radius: 8px;
     }
 
     /* Leaderboard Tabs */
@@ -458,6 +521,47 @@
       border-color: var(--accent-green);
       box-shadow: 0 0 10px var(--accent-glow);
     }
+
+    /* Professional Withdrawal Modal Inputs */
+    .withdraw-form {
+      text-align: left;
+      margin: 14px 0;
+    }
+
+    .withdraw-form label {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .withdraw-input-group {
+      display: flex;
+      background: #161616;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .withdraw-input-group input {
+      background: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      color: white;
+    }
+
+    .asset-tag {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--accent-green);
+      background: rgba(0, 255, 102, 0.1);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
@@ -471,7 +575,7 @@
       </div>
     </div>
     <div class="balance-box">
-      <span class="ton" id="topBalance">0.5000 TON</span>
+      <span class="ton" id="topBalance">1.0000 TON</span>
       <span class="divider">/</span>
       <span class="ticket" id="topTickets">💎 5 Tickets</span>
     </div>
@@ -500,9 +604,11 @@
       </div>
 
       <div class="card">
-        <h4 style="margin-bottom: 10px; font-size: 15px;">🚀 High-CPM Ad Tasks (Earn up to $3.00)</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Watch sponsored partner promotions to earn high crypto payouts & bonus tickets.</p>
-        <button class="primary-btn" onclick="watchAdTask()">Watch Sponsored Ad (Earn $2.00)</button>
+        <h4 style="margin-bottom: 6px; font-size: 15px;">🚀 High-CPM Partner Tasks (30 Active)</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Complete 3 ad cycles per task to claim $1.00 reward + 1 Ticket.</p>
+        <div class="tasks-container" id="tasksListContainer">
+          <!-- Populated dynamically via script -->
+        </div>
       </div>
     </div>
 
@@ -516,6 +622,15 @@
           <div class="wheel-center-hub">SPIN</div>
         </div>
 
+        <div class="wheel-label-grid">
+          <div class="wheel-prize-tag">0.10 TON</div>
+          <div class="wheel-prize-tag">0.50 TON</div>
+          <div class="wheel-prize-tag">1.00 TON</div>
+          <div class="wheel-prize-tag">2 Tickets</div>
+          <div class="wheel-prize-tag">0.05 TON</div>
+          <div class="wheel-prize-tag">5.0 TON Jackpot</div>
+        </div>
+
         <p id="spinStatus" style="font-size: 13px; margin: 10px 0; font-weight: 600; color: var(--accent-green);">5 Tickets Available</p>
         <button class="primary-btn" onclick="spinWheel()">SPIN THE WHEEL</button>
       </div>
@@ -524,23 +639,23 @@
     <div id="view-wallet" class="tab-view">
       <div class="card wallet-balance-card">
         <p>MY BALANCE</p>
-        <h1 id="walletBalanceBig">0.5000 TON</h1>
-        <p id="withdrawLimitText">0.5000 / 0.01 TON (100%)</p>
+        <h1 id="walletBalanceBig">1.0000 TON</h1>
+        <p id="withdrawLimitText">1.0000 / 5.00 TON (20%)</p>
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" id="progressBarFill" style="width: 100%;"></div>
+          <div class="progress-bar-fill" id="progressBarFill" style="width: 20%;"></div>
         </div>
-        <button class="primary-btn" onclick="triggerWithdraw()" style="margin-top: 10px;">Withdraw Funds</button>
+        <button class="primary-btn" onclick="openWithdrawalModal()" style="margin-top: 10px;">Request Withdrawal</button>
       </div>
 
       <div class="card">
         <h4 style="margin-bottom: 12px; font-size: 14px;">WITHDRAWAL INFO</h4>
         <div class="info-row">
           <span>Minimum Payout</span>
-          <strong style="color: white;">0.01 TON <span style="color: var(--accent-green); font-size: 11px;">🎁 First Bonus</span></strong>
+          <strong style="color: white;">5.00 TON <span style="color: var(--accent-green); font-size: 11px;">🔒 Secure Limit</span></strong>
         </div>
         <div class="info-row">
           <span>Payout Speed</span>
-          <strong style="color: white;">Usually within 24 hours</strong>
+          <strong style="color: white;">Within 24 hours</strong>
         </div>
         <div class="info-row">
           <span>Network</span>
@@ -563,8 +678,7 @@
         <div class="lb-tab" id="tabEarned" onclick="switchLb('earned')">Most Earned ($)</div>
       </div>
 
-      <div class="leaderboard-list" id="leaderboardContainer">
-        </div>
+      <div class="leaderboard-list" id="leaderboardContainer"></div>
     </div>
 
   </div>
@@ -605,21 +719,60 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="welcomeBonusModal" style="display: flex;">
+  <!-- Professional Withdrawal Modal Overlay -->
+  <div class="modal-overlay" id="withdrawalModal">
     <div class="modal-card">
-      <div style="font-size: 36px; margin-bottom: 8px;">🎁</div>
-      <h3 style="color: var(--accent-green); margin-bottom: 8px;">Exclusive New User Bonus!</h3>
-      <p style="font-size: 13px; line-height: 1.4; color: var(--text-muted); margin-bottom: 16px;">
-        Congratulations! You are selected among the **only first 20,000 global users** to receive an instant **$0.50 high-cpm newcomer credit**. Claim your reward now!
-      </p>
-      <button class="primary-btn" onclick="claimWelcomeBonus()">Claim $0.50 Credit Now</button>
+      <button class="modal-close" onclick="closeWithdrawalModal()">×</button>
+      <div style="font-size: 32px; margin-bottom: 6px;">💎</div>
+      <h3 style="margin-bottom: 4px;">Request Payout</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Secure on-chain transfer to your wallet address.</p>
+      
+      <div class="withdraw-form">
+        <label>Destination TON Address</label>
+        <div class="withdraw-input-group">
+          <input type="text" id="tonAddressInput" placeholder="UQ... or EQ...">
+          <span class="asset-tag">TON</span>
+        </div>
+      </div>
+
+      <button class="primary-btn" onclick="submitWithdrawal()">Confirm Withdrawal</button>
     </div>
   </div>
 
   <script>
-    let userBalance = 0.50;
-    let userTickets = 5;
-    let currentLbType = 'referrals';
+    // Adsgram Block IDs Integration
+    const REWARD_BLOCK_ID = "46463";
+    const INTERSTITIAL_BLOCK_ID = "int-46465";
+
+    let adController = null;
+    let interstitialController = null;
+
+    // Persistent State Management
+    let userState = {
+      userId: "default_user",
+      balance: 1.0000,
+      tickets: 5,
+      taskProgress: {}
+    };
+
+    function saveState() {
+      localStorage.setItem(`yum_tasty_state_${userState.userId}`, JSON.stringify(userState));
+    }
+
+    function loadState(id) {
+      userState.userId = id;
+      const saved = localStorage.getItem(`yum_tasty_state_${id}`);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          userState.balance = parsed.balance ?? 1.0000;
+          userState.tickets = parsed.tickets ?? 5;
+          userState.taskProgress = parsed.taskProgress ?? {};
+        } catch (e) {
+          console.error("Storage corruption, loading defaults", e);
+        }
+      }
+    }
 
     const referralLeaders = [
       { rank: 1, name: "Faraz⚡", handle: "@Coto_Trader", score: "4,210 referrals", avatar: "👨‍💻" },
@@ -637,6 +790,8 @@
       { rank: 5, name: "CryptoNinja", handle: "@ninja_x", score: "$342.10", avatar: "🥷" }
     ];
 
+    let currentLbType = 'referrals';
+
     window.addEventListener('DOMContentLoaded', () => {
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
@@ -646,21 +801,35 @@
           document.getElementById('userNameDisplay').innerText = user.first_name || 'User';
           document.getElementById('userHandleDisplay').innerText = user.username ? `@${user.username}` : '@yum_user';
           document.getElementById('userAvatarContainer').innerText = (user.first_name || 'U')[0].toUpperCase();
+          loadState(String(user.id));
         }
       }
+
+      // Initialize Adsgram SDK controllers safely
+      if (window.Adsgram) {
+        adController = window.Adsgram.init({ blockId: REWARD_BLOCK_ID });
+        interstitialController = window.Adsgram.init({ blockId: INTERSTITIAL_BLOCK_ID });
+        
+        // App-open Interstitial trigger
+        interstitialController.show().catch(err => console.log("Interstitial skipped", err));
+      }
+
+      renderTasksList();
       renderLeaderboard();
       updateUI();
       buildCheckinGrid();
     });
 
     function updateUI() {
-      document.getElementById('topBalance').innerText = `${userBalance.toFixed(4)} TON`;
-      document.getElementById('topTickets').innerText = `💎 ${userTickets} Tickets`;
-      document.getElementById('walletBalanceBig').innerText = `${userBalance.toFixed(4)} TON`;
+      document.getElementById('topBalance').innerText = `${userState.balance.toFixed(4)} TON`;
+      document.getElementById('topTickets').innerText = `💎 ${userState.tickets} Tickets`;
+      document.getElementById('walletBalanceBig').innerText = `${userState.balance.toFixed(4)} TON`;
       
-      const progressPercent = Math.min(100, (userBalance / 0.01) * 100);
+      const minPayout = 5.00;
+      const progressPercent = Math.min(100, (userState.balance / minPayout) * 100);
       document.getElementById('progressBarFill').style.width = `${progressPercent}%`;
-      document.getElementById('withdrawLimitText').innerText = `${userBalance.toFixed(4)} / 0.01 TON (${progressPercent.toFixed(0)}%)`;
+      document.getElementById('withdrawLimitText').innerText = `${userState.balance.toFixed(4)} / ${minPayout.toFixed(2)} TON (${progressPercent.toFixed(0)}%)`;
+      saveState();
     }
 
     function switchTab(tabId, btnElement) {
@@ -678,11 +847,16 @@
       document.getElementById('checkinModal').style.display = 'none';
     }
 
-    function claimWelcomeBonus() {
-      userBalance += 0.50;
-      userTickets += 2;
-      updateUI();
-      document.getElementById('welcomeBonusModal').style.display = 'none';
+    function openWithdrawalModal() {
+      const minPayout = 5.00;
+      if (userState.balance < minPayout) {
+        alert(`Minimum withdrawal threshold is ${minPayout} TON. Keep completing tasks to unlock payout!`);
+        return;
+      }
+      document.getElementById('withdrawalModal').style.display = 'flex';
+    }
+    function closeWithdrawalModal() {
+      document.getElementById('withdrawalModal').style.display = 'none';
     }
 
     function buildCheckinGrid() {
@@ -697,26 +871,89 @@
     }
 
     function claimDailyCheckin() {
-      userBalance += 0.01;
-      userTickets += 1;
-      updateUI();
-      closeCheckinModal();
-      alert("Successfully checked in! Claimed 0.01 TON + 1 Ticket.");
+      if (adController) {
+        adController.show().then(() => {
+          userState.balance += 0.01;
+          userState.tickets += 1;
+          updateUI();
+          closeCheckinModal();
+          alert("Successfully checked in! Claimed 0.01 TON + 1 Ticket.");
+        }).catch(() => {
+          alert("Ad was closed early. Complete the video to claim daily rewards.");
+        });
+      } else {
+        // Fallback simulation if offline/testing locally
+        userState.balance += 0.01;
+        userState.tickets += 1;
+        updateUI();
+        closeCheckinModal();
+        alert("Successfully checked in! Claimed 0.01 TON + 1 Ticket.");
+      }
     }
 
-    function watchAdTask() {
-      userBalance += 2.00;
-      userTickets += 1;
-      updateUI();
-      alert("Sponsored ad verified! You earned $2.00 CPM bonus + 1 Ticket.");
+    // Render 30 Distinct Tasks Requiring 3 Ad Views Each
+    function renderTasksList() {
+      const container = document.getElementById('tasksListContainer');
+      let html = '';
+      for (let i = 1; i <= 30; i++) {
+        const taskId = `task_${i}`;
+        if (userState.taskProgress[taskId] === undefined) {
+          userState.taskProgress[taskId] = 0; // 0 out of 3 ad cycles completed
+        }
+        const watchedCount = userState.taskProgress[taskId];
+        const isFinished = watchedCount >= 3;
+
+        html += `
+          <div class="task-item">
+            <div class="task-info">
+              <h5>Partner Campaign #${i}</h5>
+              <p>${isFinished ? 'Completed ($1.00 Earned)' : `Progress: ${watchedCount}/3 Ad Views`}</p>
+            </div>
+            <button class="task-btn" ${isFinished ? 'disabled' : ''} onclick="executeTaskAd('${taskId}')">
+              ${isFinished ? 'Claimed' : `Watch Ad (${watchedCount}/3)`}
+            </button>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+    }
+
+    function executeTaskAd(taskId) {
+      if (userState.taskProgress[taskId] >= 3) return;
+
+      if (adController) {
+        adController.show().then(() => {
+          userState.taskProgress[taskId]++;
+          if (userState.taskProgress[taskId] >= 3) {
+            userState.balance += 1.00;
+            userState.tickets += 1;
+            alert("Task completed successfully! $1.00 and 1 Ticket credited.");
+          } else {
+            alert(`Ad watched! Complete ${3 - userState.taskProgress[taskId]} more view(s) to claim reward.`);
+          }
+          renderTasksList();
+          updateUI();
+        }).catch(() => {
+          alert("Ad skipped or failed to load. Please watch completely to progress.");
+        });
+      } else {
+        // Fallback simulation mode
+        userState.taskProgress[taskId]++;
+        if (userState.taskProgress[taskId] >= 3) {
+          userState.balance += 1.00;
+          userState.tickets += 1;
+        }
+        renderTasksList();
+        updateUI();
+      }
     }
 
     function spinWheel() {
-      if (userTickets < 7) {
+      if (userState.tickets < 7) {
         alert("Not enough tickets! You need 7 tickets to spin.");
         return;
       }
-      userTickets -= 7;
+      userState.tickets -= 7;
       updateUI();
 
       const wheel = document.getElementById('wheelElement');
@@ -725,22 +962,22 @@
 
       setTimeout(() => {
         const rand = Math.random();
-        let prize = "Try again!";
+        let prizeText = "";
         if (rand > 0.99) {
-          prize = "$1.00 Jackpot!";
-          userBalance += 1.00;
-        } else if (rand > 0.95) {
-          prize = "$0.50 High Reward!";
-          userBalance += 0.50;
-        } else if (rand > 0.70) {
-          prize = "0.02 TON";
-          userBalance += 0.02;
+          prizeText = "5.0 TON Jackpot!";
+          userState.balance += 5.0;
+        } else if (rand > 0.90) {
+          prizeText = "1.00 TON Reward!";
+          userState.balance += 1.00;
+        } else if (rand > 0.60) {
+          prizeText = "0.50 TON Reward!";
+          userState.balance += 0.50;
         } else {
-          prize = "0.01 TON";
-          userBalance += 0.01;
+          prizeText = "0.10 TON Reward!";
+          userState.balance += 0.10;
         }
         updateUI();
-        alert(`Spin Result: ${prize}`);
+        alert(`Lucky Spin Result: Won ${prizeText}`);
       }, 4000);
     }
 
@@ -779,16 +1016,22 @@
       container.innerHTML = html;
     }
 
-    function triggerWithdraw() {
-      if (userBalance < 0.01) {
-        alert("Minimum withdrawal threshold is 0.01 TON.");
+    function submitWithdrawal() {
+      const address = document.getElementById('tonAddressInput').value.trim();
+      if (!address || address.length < 10) {
+        alert("Please enter a valid TON wallet address (UQ... or EQ...).");
         return;
       }
-      alert(`Withdrawal request for ${userBalance.toFixed(4)} TON submitted successfully! Payout will process within 24 hours.`);
+      const amountToWithdraw = userState.balance;
+      userState.balance = 0.0000;
+      updateUI();
+      closeWithdrawalModal();
+      alert(`Withdrawal request for ${amountToWithdraw.toFixed(4)} TON submitted successfully! Payout will process within 24 hours to ${address}.`);
     }
 
     function copyInviteLink() {
-      navigator.clipboard.writeText("https://t.me/YumTastyTasks_bot?start=ref_" + Date.now());
+      const refLink = `https://t.me/YumTastyTasks_bot?start=ref_${userState.userId}`;
+      navigator.clipboard.writeText(refLink);
       alert("Referral link copied to clipboard!");
     }
   </script>
