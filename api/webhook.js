@@ -1,12 +1,19 @@
 export default async function handler(req, res) {
+  // Auto-register webhook on first ping to prevent manual browser errors
+  const token = "8620931331:AAGglluk7iNp_P177gWOH0Zpn774EqAYUwk";
+  const appUrl = "https://yum-tasty-app.vercel.app";
+
+  if (req.method === 'GET') {
+    const setupRes = await fetch(`https://api.telegram.org/bot${token}/setWebhook?url=${appUrl}/api/webhook`);
+    const data = await setupRes.json();
+    return res.status(200).json(data);
+  }
+
   if (req.method === 'POST') {
     const { message } = req.body;
     
     if (message && message.text === '/start') {
       const chatId = message.chat.id;
-      // Hardcoded token to prevent authorization errors
-      const token = "8620931331:AAGglluk7iNp_P177gWOH0Zpn774EqAYUwk";
-      const appUrl = "https://yum-tasty-app.vercel.app";
 
       const payload = {
         chat_id: chatId,
@@ -33,5 +40,4 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ status: 'ok' });
   }
-  return res.status(200).json({ message: 'Webhook is active' });
 }
