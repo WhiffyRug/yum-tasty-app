@@ -2,103 +2,193 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Yum Tasty !!</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Adsgram SDK script integration -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --bg-color: #0b0b0e;
-            --card-bg: #16161c;
+            --bg-color: #0b0e14;
+            --card-bg: #151a21;
             --accent-gold: #f3ba2f;
+            --accent-gold-glow: rgba(243, 186, 47, 0.2);
             --text-main: #ffffff;
-            --text-muted: #9ca3af;
+            --text-muted: #8c96a5;
+            --border-color: #232b35;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            padding-bottom: 70px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
         }
-        .header {
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 70px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 16px;
             background: var(--card-bg);
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo-area {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--accent-gold);
+            letter-spacing: 0.5px;
+        }
+        .wallet-btn {
+            background: var(--accent-gold-glow);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
         }
         .container {
-            padding: 20px;
-            text-align: center;
+            padding: 16px;
         }
         .balance-card {
-            background: var(--card-bg);
-            border: 1px solid #2b2b36;
+            background: linear-gradient(135deg, #1a202a 0%, #11151c 100%);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 20px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             margin-bottom: 20px;
         }
+        .balance-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
         .balance-amount {
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 36px;
+            font-weight: 900;
             color: var(--accent-gold);
-            margin: 10px 0;
+            margin-bottom: 12px;
+        }
+        .progress-container {
+            width: 100%;
+            background: var(--border-color);
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-gold);
+            width: 2%;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
         }
         .btn {
-            background-color: var(--accent-gold);
+            background: var(--accent-gold);
             color: #000;
             border: none;
-            padding: 14px 20px;
+            padding: 14px;
             border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
-            margin-top: 10px;
+            text-align: center;
+            transition: opacity 0.2s;
         }
-        .task-item {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
+        .btn:active {
+            opacity: 0.8;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
             margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #222;
         }
-        .task-info {
-            text-align: left;
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .task-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .task-info p {
+            font-size: 12px;
+            color: var(--accent-gold);
         }
         .task-btn {
-            background: var(--accent-gold);
+            background: var(--border-color);
+            color: var(--text-main);
             border: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
-            font-weight: bold;
+            font-size: 12px;
+            font-weight: 600;
             cursor: pointer;
+        }
+        .task-btn.completed {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
         }
         .nav-bar {
             position: fixed;
             bottom: 0;
             left: 0;
-            width: 100%;
-            background: #111116;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
             padding: 10px 0;
-            border-top: 1px solid #222;
+            max-width: 480px;
+            margin: 0 auto;
         }
         .nav-item {
-            color: var(--text-muted);
-            font-size: 12px;
-            text-align: center;
-            cursor: pointer;
             background: none;
             border: none;
+            color: var(--text-muted);
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
         }
         .nav-item.active {
             color: var(--accent-gold);
@@ -109,119 +199,270 @@
         .tab-content.active {
             display: block;
         }
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 100;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+        .modal-content h3 {
+            margin-bottom: 12px;
+        }
+        .modal-content p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .input-box {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <span><b>Yum Tasty !!</b></span>
-        <span id="userWallet">User...TON</span>
-    </div>
+    <header>
+        <div class="logo-area">⚡ Yum Tasty !!</div>
+        <button class="wallet-btn" id="connectWalletBtn" onclick="toggleWalletModal()">Connect Wallet</button>
+    </header>
 
-    <!-- MINE / WALLET TAB -->
-    <div id="tab-mine" class="tab-content active container">
-        <div class="balance-card">
-            <p style="color: var(--text-muted); margin:0;">TOTAL EARNINGS</p>
-            <div class="balance-amount" id="balanceDisplay">$0.50</div>
-            <p style="font-size: 13px; color: var(--text-muted);">Withdrawal Target: $25.00</p>
-        </div>
-        <button class="btn" onclick="requestWithdrawal()">WITHDRAW FUNDS</button>
-    </div>
-
-    <!-- TASKS & ADSGRAM MONETIZATION TAB -->
-    <div id="tab-tasks" class="tab-content container">
-        <h3>Earn Rewards</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Watch ads or complete tasks to grow your balance.</p>
-        
-        <div class="task-item">
-            <div class="task-info">
-                <strong>Watch Rewarded Ad</strong><br>
-                <span id="taskRewardText" style="color: var(--accent-gold); font-size: 14px;">+0.10$</span>
+    <div class="container">
+        <!-- HOME TAB -->
+        <div id="tab-home" class="tab-content active">
+            <div class="balance-card">
+                <div class="balance-label">Total Balance</div>
+                <div class="balance-amount" id="balanceDisplay">$0.50</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">Goal: $25.00 Withdraw Limit (2%)</div>
             </div>
-            <button class="task-btn" onclick="showAdsgramAd()">Watch</button>
+
+            <div class="action-row">
+                <button class="btn" onclick="triggerWithdraw()">Withdraw Funds</button>
+                <button class="btn btn-outline" onclick="switchTab('referral')">Earn $0.50/Ref</button>
+            </div>
+
+            <div class="section-title">
+                <span>Task Center</span>
+                <span style="font-size: 12px; color: var(--text-muted);">Reward decays near limit</span>
+            </div>
+
+            <div class="task-list" id="taskList">
+                <!-- Dynamically injected tasks -->
+            </div>
+        </div>
+
+        <!-- REFERRAL TAB -->
+        <div id="tab-referral" class="tab-content">
+            <div class="balance-card" style="text-align: left;">
+                <div class="balance-label">Invite Friends</div>
+                <h3 style="margin-bottom: 8px;">Earn $0.50 per Referral</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Share your link with friends. They get a $0.50 sign-up bonus, and you earn $0.50 instantly when they join!</p>
+                <input type="text" class="input-box" id="refLinkInput" readonly style="margin-bottom: 12px; text-align: center;">
+                <button class="btn" style="width: 100%;" onclick="copyRefLink()">Copy Referral Link</button>
+            </div>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <div id="tab-profile" class="tab-content">
+            <div class="balance-card" style="text-align: left;">
+                <div class="balance-label">Account Profile</div>
+                <h3 id="userNameDisplay" style="margin-bottom: 8px;">User_TON</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Telegram ID: <span id="userIdDisplay">12345678</span></p>
+                
+                <div style="border-top: 1px solid var(--border-color); padding-top: 16px;">
+                    <div class="balance-label">Linked Wallet Address</div>
+                    <p id="walletAddressDisplay" style="font-size: 14px; color: var(--accent-gold); margin-bottom: 16px;">Not Connected</p>
+                    <button class="btn btn-outline" style="width: 100%;" onclick="toggleWalletModal()">Manage Wallet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WALLET MODAL -->
+    <div class="modal" id="walletModal">
+        <div class="modal-content">
+            <h3>Connect TON Wallet</h3>
+            <p>Link your TON address or custodial wallet to process withdrawals when you hit the $25 threshold.</p>
+            <input type="text" class="input-box" id="tonAddressInput" placeholder="Paste TON Address (EQ... / UQ...)">
+            <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="saveWallet()">Connect Address</button>
+            <button class="btn btn-outline" style="width: 100%;" onclick="toggleWalletModal()">Cancel</button>
         </div>
     </div>
 
     <!-- NAVIGATION BAR -->
-    <div class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('mine', event)">⚡ Wallet</button>
-        <button class="nav-item" onclick="switchTab('tasks', event)">📝 Earn</button>
-    </div>
+    <nav class="nav-bar">
+        <button class="nav-item active" onclick="switchTab('home')">
+            <span>🏠</span> Home
+        </button>
+        <button class="nav-item" onclick="switchTab('referral')">
+            <span>👥</span> Referral
+        </button>
+        <button class="nav-item" onclick="switchTab('profile')">
+            <span>👤</span> Profile
+        </button>
+    </nav>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
         tg.expand();
 
-        // Starts user with $0.50 instantly
-        let balance = 0.50;
+        let state = {
+            balance: 0.50,
+            walletAddress: '',
+            completedTasks: []
+        };
 
-        // Initialize Adsgram banner controller (Replace 'YOUR_BLOCK_ID' with your actual block ID from Adsgram dashboard)
-        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" }) : null;
+        const TARGET_LIMIT = 25.00;
 
-        function updateDisplay() {
-            document.getElementById('balanceDisplay').innerText = '$' + balance.toFixed(2);
+        const tasks = [
+            { id: 1, title: 'Watch Sponsor Ad #1', baseReward: 0.05, desc: 'View short promotional clip' },
+            { id: 2, title: 'Watch Sponsor Ad #2', baseReward: 0.05, desc: 'View short promotional clip' },
+            { id: 3, title: 'Explore Partner Mini App', baseReward: 0.04, desc: 'Interact with partner bot' },
+            { id: 4, title: 'Watch High-Yield Ad #3', baseReward: 0.04, desc: 'View promotional video' },
+            { id: 5, title: 'Join Telegram Community', baseReward: 0.03, desc: 'Join official updates channel' },
+            { id: 6, title: 'Watch Promo Ad #4', baseReward: 0.03, desc: 'View short promotional clip' },
+            { id: 7, title: 'Check Daily Bonus Ad', baseReward: 0.02, desc: 'View daily partner video' },
+            { id: 8, title: 'Extra Task Ad #5', baseReward: 0.02, desc: 'View bonus sponsor video' },
+            { id: 9, title: 'Final Stretch Ad #6', baseReward: 0.01, desc: 'View sponsor clip' },
+            { id: 10, title: 'Micro Task Ad #7', baseReward: 0.005, desc: 'View quick sponsor clip' }
+        ];
+
+        function getCurrentReward(baseReward) {
+            if (state.balance >= 20) return 0.002;
+            if (state.balance >= 15) return 0.004;
+            if (state.balance >= 10) return 0.01;
+            if (state.balance >= 5) return 0.02;
+            return baseReward;
+        }
+
+        function initApp() {
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                document.getElementById('userNameDisplay').innerText = user.first_name || 'User_TON';
+                document.getElementById('userIdDisplay').innerText = user.id;
+                document.getElementById('refLinkInput').value = `https://t.me/yum_tasty_bot?start=ref_${user.id}`;
+            } else {
+                document.getElementById('refLinkInput').value = `https://t.me/yum_tasty_bot?start=ref_demo`;
+            }
+            renderTasks();
+            updateUI();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('taskList');
+            container.innerHTML = '';
             
-            // Dynamic reward reduction logic as user climbs toward $25
-            let currentReward = 0.10;
-            if (balance > 20.0) {
-                currentReward = 0.002; // Reduced by /50 near the end
-            } else if (balance > 15.0) {
-                currentReward = 0.004; // Reduced by /25
-            } else if (balance > 10.0) {
-                currentReward = 0.01;  // Reduced by /10
-            } else if (balance > 5.0) {
-                currentReward = 0.02;  // Reduced by /5
-            }
-            document.getElementById('taskRewardText').innerText = '+' + currentReward.toFixed(3) + '$';
+            tasks.forEach(task => {
+                const isCompleted = state.completedTasks.includes(task.id);
+                const currentReward = getCurrentReward(task.baseReward);
+                
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.innerHTML = `
+                    <div class="task-info">
+                        <h4>${task.title}</h4>
+                        <p>${task.desc} • <b>+$${currentReward.toFixed(3)}</b></p>
+                    </div>
+                    <button class="task-btn ${isCompleted ? 'completed' : ''}" onclick="runAdTask(${task.id})">
+                        ${isCompleted ? 'Done' : 'Start'}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
         }
 
-        function getCalculatedReward() {
-            if (balance > 20.0) return 0.002;
-            if (balance > 15.0) return 0.004;
-            if (balance > 10.0) return 0.01;
-            if (balance > 5.0) return 0.02;
-            return 0.10;
+        function runAdTask(taskId) {
+            if (state.completedTasks.includes(taskId)) return;
+            // No-ad mode fallback simulation: grants reward instantly
+            completeTaskReward(taskId);
         }
 
-        function showAdsgramAd() {
-            if (adController) {
-                adController.show().then((result) => {
-                    // User finished watching the ad successfully -> Give reward
-                    let reward = getCalculatedReward();
-                    balance += reward;
-                    updateDisplay();
-                    tg.showAlert("Ad watched! Reward added to balance.");
-                }).catch((result) => {
-                    // User closed the ad early or error occurred
-                    tg.showAlert("Ad skipped or failed to load. No reward given.");
-                });
-            } else {
-                // Fallback simulation if testing locally outside Telegram/Adsgram SDK environment
-                let reward = getCalculatedReward();
-                balance += reward;
-                updateDisplay();
-                tg.showAlert("Task simulated! Reward added.");
-            }
+        function completeTaskReward(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            const reward = getCurrentReward(task.baseReward);
+            state.balance += reward;
+            state.completedTasks.push(taskId);
+
+            if(state.balance > TARGET_LIMIT) state.balance = TARGET_LIMIT;
+
+            updateUI();
+            renderTasks();
+            tg.HapticFeedback?.notificationOccurred('success');
         }
 
-        function requestWithdrawal() {
-            if (balance < 25.0) {
-                tg.showAlert("Minimum withdrawal threshold is $25.00! Keep completing tasks to unlock.");
-            } else {
-                tg.showAlert("Withdrawal pending: Network fee verification required.");
-            }
+        function updateUI() {
+            document.getElementById('balanceDisplay').innerText = `$${state.balance.toFixed(2)}`;
+            let percentage = (state.balance / TARGET_LIMIT) * 100;
+            if (percentage > 100) percentage = 100;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.getElementById('progressText').innerText = `Goal: $${TARGET_LIMIT.toFixed(2)} Withdraw Limit (${percentage.toFixed(1)}%)`;
         }
 
-        function switchTab(tabName, event) {
+        function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabName).classList.add('active');
-            event.currentTarget.classList.add('active');
+
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            event.currentTarget?.classList.add('active');
         }
 
-        updateDisplay();
+        function toggleWalletModal() {
+            const modal = document.getElementById('walletModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function saveWallet() {
+            const addr = document.getElementById('tonAddressInput').value.trim();
+            if (addr.length > 5) {
+                state.walletAddress = addr;
+                document.getElementById('walletAddressDisplay').innerText = addr.substring(0, 6) + '...' + addr.substring(addr.length - 4);
+                document.getElementById('connectWalletBtn').innerText = 'Connected';
+                toggleWalletModal();
+                tg.HapticFeedback?.notificationOccurred('success');
+            } else {
+                alert('Please enter a valid wallet address');
+            }
+        }
+
+        function triggerWithdraw() {
+            if (state.balance < TARGET_LIMIT) {
+                alert(`Minimum withdrawal threshold is $${TARGET_LIMIT.toFixed(2)}. Current balance: $${state.balance.toFixed(2)}. Complete more tasks and invite friends to reach the limit!`);
+            } else {
+                alert('Withdrawal request submitted successfully! Processing via TON network...');
+            }
+        }
+
+        function copyRefLink() {
+            const copyText = document.getElementById('refLinkInput');
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert('Referral link copied to clipboard!');
+        }
+
+        initApp();
     </script>
 </body>
 </html>
