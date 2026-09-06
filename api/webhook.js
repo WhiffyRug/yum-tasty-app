@@ -1,6 +1,5 @@
 export default async function handler(req, res) {
-  // Auto-register webhook on first ping to prevent manual browser errors
-  const token = "8620931331:AAGglluk7iNp_P177gWOH0Zpn774EqAYUwk";
+  const token = "8620931331:AAGglluk7iNp_P177gWOH0Zpn774eQaYUwk";
   const appUrl = "https://yum-tasty-app.vercel.app";
 
   if (req.method === 'GET') {
