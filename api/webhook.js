@@ -4,7 +4,8 @@ export default async function handler(req, res) {
     
     if (message && message.text === '/start') {
       const chatId = message.chat.id;
-      const token = process.env.TELEGRAM_BOT_TOKEN || "8620931331:AAGglluk7iNp_P177gWOH0Zpn774EqAYUwk";
+      // Hardcoded token to prevent authorization errors
+      const token = "8620931331:AAGglluk7iNp_P177gWOH0Zpn774EqAYUwk";
       const appUrl = "https://yum-tasty-app.vercel.app";
 
       const payload = {
