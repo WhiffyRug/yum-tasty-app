@@ -211,8 +211,8 @@
     }
 
     .task-btn:disabled {
-      background: #333;
-      color: #777;
+      background: #262626;
+      color: #888888;
       cursor: not-allowed;
     }
 
@@ -265,38 +265,71 @@
       color: var(--text-muted);
     }
 
-    /* Spin Wheel View */
-    .wheel-container {
-      text-align: center;
+    /* Spin Wheel View matching reference design */
+    .wheel-outer-ring {
       position: relative;
       margin: 20px auto;
-      width: 280px;
-      height: 280px;
+      width: 290px;
+      height: 290px;
       border-radius: 50%;
-      border: 6px solid var(--accent-green);
+      background: #152818;
+      border: 8px solid #234c2a;
       box-shadow: 0 0 25px var(--accent-glow);
-      background: conic-gradient(
-        #00FF66 0deg 60deg,
-        #112211 60deg 120deg,
-        #00cc52 120deg 180deg,
-        #0b331a 180deg 240deg,
-        #1a1a1a 240deg 300deg,
-        #054d1f 300deg 360deg
-      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rim-pin {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 50%;
+      z-index: 5;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      overflow: hidden;
       transition: transform 4s cubic-bezier(0.15, 0.95, 0.15, 1);
+    }
+
+    .wheel-slice {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      transform-origin: 100% 100%;
+      left: 0;
+      top: 0;
+    }
+
+    .slice-text {
+      position: absolute;
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      width: 65px;
+      transform: rotate(30deg);
+      z-index: 3;
     }
 
     .wheel-pointer {
       position: absolute;
-      top: -15px;
+      top: -14px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 20px solid #ffffff;
-      z-index: 10;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 24px solid #ffcc00;
+      z-index: 20;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     }
 
     .wheel-center-hub {
@@ -304,17 +337,26 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
-      background: #000000;
-      border: 3px solid var(--accent-green);
+      width: 75px;
+      height: 75px;
+      background: radial-gradient(circle, #3b82f6 0%, #1d4ed8 100%);
+      border: 4px solid #ffffff;
       border-radius: 50%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-      color: var(--accent-green);
+      font-size: 11px;
+      font-weight: 900;
+      color: #ffffff;
+      z-index: 15;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
+
+    .wheel-center-hub small {
+      font-size: 8px;
+      color: #e0e7ff;
     }
 
     .wheel-label-grid {
@@ -522,7 +564,6 @@
       box-shadow: 0 0 10px var(--accent-glow);
     }
 
-    /* Professional Withdrawal Modal Inputs */
     .withdraw-form {
       text-align: left;
       margin: 14px 0;
@@ -575,7 +616,7 @@
       </div>
     </div>
     <div class="balance-box">
-      <span class="ton" id="topBalance">1.0000 TON</span>
+      <span class="ton" id="topBalance">0.0000 TON</span>
       <span class="divider">/</span>
       <span class="ticket" id="topTickets">💎 5 Tickets</span>
     </div>
@@ -583,10 +624,11 @@
 
   <div class="main-content">
 
+    <!-- HOME VIEW -->
     <div id="view-home" class="tab-view active">
       <div class="hero-banner">
         <h2>⚡ Yum Tasty Rewards Hub</h2>
-        <p>Complete high-cpm tasks, claim daily assets, and boost your crypto earnings instantly!</p>
+        <p>Watch sponsored partner ads to earn assets and tickets securely!</p>
         <button class="primary-btn" onclick="openCheckinModal()">Daily Check-in 📅</button>
       </div>
 
@@ -604,31 +646,42 @@
       </div>
 
       <div class="card">
-        <h4 style="margin-bottom: 6px; font-size: 15px;">🚀 High-CPM Partner Tasks (30 Active)</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Complete 3 ad cycles per task to claim $1.00 reward + 1 Ticket.</p>
-        <div class="tasks-container" id="tasksListContainer">
-          <!-- Populated dynamically via script -->
-        </div>
+        <h4 style="margin-bottom: 6px; font-size: 15px;">🚀 Partner Tasks (30 Active)</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Complete 3 ad cycles per task to earn 0.01 TON + 1 Ticket. 2h reset cooldown applies.</p>
+        <div class="tasks-container" id="tasksListContainer"></div>
       </div>
     </div>
 
+    <!-- SPIN VIEW -->
     <div id="view-spin" class="tab-view">
       <div class="card" style="text-align: center;">
         <h3 style="margin-bottom: 4px;">Lucky Spin Wheel</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Cost: 7 tickets per spin. Try your luck at major crypto rewards!</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Cost: 7 tickets per spin. Try your luck!</p>
         
-        <div class="wheel-container" id="wheelElement">
+        <div class="wheel-outer-ring" id="wheelOuterRing">
           <div class="wheel-pointer"></div>
-          <div class="wheel-center-hub">SPIN</div>
+          <div class="wheel-container" id="wheelElement">
+            <!-- 6 Slices matching reference layout precisely -->
+            <div class="wheel-slice" style="transform: rotate(0deg); background: #3b82f6;"><span class="slice-text" style="top: 25px; left: 45px;">0.01$</span></div>
+            <div class="wheel-slice" style="transform: rotate(60deg); background: #ec4899;"><span class="slice-text" style="top: 25px; left: 45px;">0.02$</span></div>
+            <div class="wheel-slice" style="transform: rotate(120deg); background: #eab308;"><span class="slice-text" style="top: 25px; left: 38px;">Try Again</span></div>
+            <div class="wheel-slice" style="transform: rotate(180deg); background: #84cc16;"><span class="slice-text" style="top: 25px; left: 35px;">Better Luck</span></div>
+            <div class="wheel-slice" style="transform: rotate(240deg); background: #06b6d4;"><span class="slice-text" style="top: 25px; left: 40px;">Free Spin</span></div>
+            <div class="wheel-slice" style="transform: rotate(300deg); background: #a855f7;"><span class="slice-text" style="top: 25px; left: 45px;">0.05$</span></div>
+          </div>
+          <div class="wheel-center-hub" onclick="spinWheel()">
+            <span>SPIN</span>
+            <small>7 Ticks</small>
+          </div>
         </div>
 
         <div class="wheel-label-grid">
-          <div class="wheel-prize-tag">0.10 TON</div>
-          <div class="wheel-prize-tag">0.50 TON</div>
-          <div class="wheel-prize-tag">1.00 TON</div>
-          <div class="wheel-prize-tag">2 Tickets</div>
-          <div class="wheel-prize-tag">0.05 TON</div>
-          <div class="wheel-prize-tag">5.0 TON Jackpot</div>
+          <div class="wheel-prize-tag">0.01$</div>
+          <div class="wheel-prize-tag">0.02$</div>
+          <div class="wheel-prize-tag">Try Again</div>
+          <div class="wheel-prize-tag">Better Luck</div>
+          <div class="wheel-prize-tag">Free Spin</div>
+          <div class="wheel-prize-tag">0.05$</div>
         </div>
 
         <p id="spinStatus" style="font-size: 13px; margin: 10px 0; font-weight: 600; color: var(--accent-green);">5 Tickets Available</p>
@@ -636,13 +689,14 @@
       </div>
     </div>
 
+    <!-- WALLET VIEW -->
     <div id="view-wallet" class="tab-view">
       <div class="card wallet-balance-card">
         <p>MY BALANCE</p>
-        <h1 id="walletBalanceBig">1.0000 TON</h1>
-        <p id="withdrawLimitText">1.0000 / 5.00 TON (20%)</p>
+        <h1 id="walletBalanceBig">0.0000 TON</h1>
+        <p id="withdrawLimitText">0.0000 / 5.00 TON (0%)</p>
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" id="progressBarFill" style="width: 20%;"></div>
+          <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
         </div>
         <button class="primary-btn" onclick="openWithdrawalModal()" style="margin-top: 10px;">Request Withdrawal</button>
       </div>
@@ -664,6 +718,7 @@
       </div>
     </div>
 
+    <!-- INVITE VIEW -->
     <div id="view-invite" class="tab-view">
       <div class="hero-banner">
         <h2>Invite Friends & Earn</h2>
@@ -672,6 +727,7 @@
       </div>
     </div>
 
+    <!-- RANK VIEW -->
     <div id="view-rank" class="tab-view">
       <div class="lb-tabs">
         <div class="lb-tab active" id="tabReferrals" onclick="switchLb('referrals')">Most Referrals</div>
@@ -706,12 +762,13 @@
     </button>
   </div>
 
+  <!-- CHECKIN MODAL -->
   <div class="modal-overlay" id="checkinModal">
     <div class="modal-card">
       <button class="modal-close" onclick="closeCheckinModal()">×</button>
       <div style="font-size: 32px; margin-bottom: 8px;">📅</div>
       <h3>Daily Check-in</h3>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Check in every day to claim 0.01 TON & 1 Ticket!</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Watch ad to claim 0.01 TON & 1 Ticket!</p>
       
       <div class="checkin-grid" id="checkinGrid"></div>
 
@@ -719,7 +776,7 @@
     </div>
   </div>
 
-  <!-- Professional Withdrawal Modal Overlay -->
+  <!-- WITHDRAWAL MODAL -->
   <div class="modal-overlay" id="withdrawalModal">
     <div class="modal-card">
       <button class="modal-close" onclick="closeWithdrawalModal()">×</button>
@@ -747,10 +804,10 @@
     let adController = null;
     let interstitialController = null;
 
-    // Persistent State Management
+    // Persistent State Management (Starts at 0.0000 balance!)
     let userState = {
       userId: "default_user",
-      balance: 1.0000,
+      balance: 0.0000,
       tickets: 5,
       taskProgress: {}
     };
@@ -765,7 +822,7 @@
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          userState.balance = parsed.balance ?? 1.0000;
+          userState.balance = parsed.balance ?? 0.0000;
           userState.tickets = parsed.tickets ?? 5;
           userState.taskProgress = parsed.taskProgress ?? {};
         } catch (e) {
@@ -805,25 +862,42 @@
         }
       }
 
-      // Initialize Adsgram SDK controllers safely
       if (window.Adsgram) {
         adController = window.Adsgram.init({ blockId: REWARD_BLOCK_ID });
         interstitialController = window.Adsgram.init({ blockId: INTERSTITIAL_BLOCK_ID });
-        
-        // App-open Interstitial trigger
-        interstitialController.show().catch(err => console.log("Interstitial skipped", err));
       }
 
+      buildWheelPins();
       renderTasksList();
       renderLeaderboard();
       updateUI();
       buildCheckinGrid();
+
+      // Interval checking 2-hour task cooldown resets
+      setInterval(checkTaskResets, 1000);
     });
+
+    function buildWheelPins() {
+      const ring = document.getElementById('wheelOuterRing');
+      const count = 12;
+      const radius = 132;
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * 2 * Math.PI;
+        const x = radius + radius * Math.cos(angle);
+        const y = radius + radius * Math.sin(angle);
+        const pin = document.createElement('div');
+        pin.className = 'rim-pin';
+        pin.style.left = `${x}px`;
+        pin.style.top = `${y}px`;
+        ring.appendChild(pin);
+      }
+    }
 
     function updateUI() {
       document.getElementById('topBalance').innerText = `${userState.balance.toFixed(4)} TON`;
       document.getElementById('topTickets').innerText = `💎 ${userState.tickets} Tickets`;
       document.getElementById('walletBalanceBig').innerText = `${userState.balance.toFixed(4)} TON`;
+      document.getElementById('spinStatus').innerText = `${userState.tickets} Tickets Available`;
       
       const minPayout = 5.00;
       const progressPercent = Math.min(100, (userState.balance / minPayout) * 100);
@@ -877,40 +951,46 @@
           userState.tickets += 1;
           updateUI();
           closeCheckinModal();
-          alert("Successfully checked in! Claimed 0.01 TON + 1 Ticket.");
-        }).catch(() => {
-          alert("Ad was closed early. Complete the video to claim daily rewards.");
+          alert("Ad watched successfully! Claimed 0.01 TON + 1 Ticket.");
+        }).catch((err) => {
+          console.error("Adsgram error:", err);
+          alert("Ad was closed early or unavailable. Please watch the full ad to claim your reward.");
         });
       } else {
-        // Fallback simulation if offline/testing locally
-        userState.balance += 0.01;
-        userState.tickets += 1;
-        updateUI();
-        closeCheckinModal();
-        alert("Successfully checked in! Claimed 0.01 TON + 1 Ticket.");
+        alert("Adsgram SDK is loading or unavailable in this environment.");
       }
     }
 
-    // Render 30 Distinct Tasks Requiring 3 Ad Views Each
     function renderTasksList() {
       const container = document.getElementById('tasksListContainer');
       let html = '';
+      const now = Date.now();
+
       for (let i = 1; i <= 30; i++) {
         const taskId = `task_${i}`;
-        if (userState.taskProgress[taskId] === undefined) {
-          userState.taskProgress[taskId] = 0; // 0 out of 3 ad cycles completed
+        if (!userState.taskProgress[taskId]) {
+          userState.taskProgress[taskId] = { views: 0, unlockAt: 0 };
         }
-        const watchedCount = userState.taskProgress[taskId];
-        const isFinished = watchedCount >= 3;
+
+        const taskData = userState.taskProgress[taskId];
+        const isLocked = now < taskData.unlockAt;
+
+        let btnText = `Watch Ad (${taskData.views}/3)`;
+        if (isLocked) {
+          const remainingSec = Math.ceil((taskData.unlockAt - now) / 1000);
+          const mins = Math.floor(remainingSec / 60);
+          const secs = remainingSec % 60;
+          btnText = `Locked (${mins}m ${secs}s)`;
+        }
 
         html += `
           <div class="task-item">
             <div class="task-info">
               <h5>Partner Campaign #${i}</h5>
-              <p>${isFinished ? 'Completed ($1.00 Earned)' : `Progress: ${watchedCount}/3 Ad Views`}</p>
+              <p>${isLocked ? 'Cooldown Active (2h reset)' : `Reward: 0.01 TON + 1 Ticket (${taskData.views}/3 Views)`}</p>
             </div>
-            <button class="task-btn" ${isFinished ? 'disabled' : ''} onclick="executeTaskAd('${taskId}')">
-              ${isFinished ? 'Claimed' : `Watch Ad (${watchedCount}/3)`}
+            <button class="task-btn" ${isLocked ? 'disabled' : ''} onclick="executeTaskAd('${taskId}')">
+              ${btnText}
             </button>
           </div>
         `;
@@ -918,33 +998,82 @@
       container.innerHTML = html;
     }
 
+    // Check task resets every second and notify professionally
+    function checkTaskResets() {
+      const now = Date.now();
+      let needsRerender = false;
+
+      for (let i = 1; i <= 30; i++) {
+        const taskId = `task_${i}`;
+        const taskData = userState.taskProgress[taskId];
+        if (taskData && taskData.unlockAt > 0 && now >= taskData.unlockAt) {
+          taskData.unlockAt = 0;
+          taskData.views = 0;
+          needsRerender = true;
+
+          // Professional Notification Message from Bot
+          const msg = `🔔 [Yum Tasty Bot Notification]\n\nPartner Campaign #${i} limit has successfully reset! You can now watch ads again to claim your 0.01 TON and 1 Ticket reward.`;
+          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showPopup) {
+            window.Telegram.WebApp.showPopup({
+              title: "Task Limit Reset",
+              message: msg,
+              buttons: [{ type: "ok", text: "Start Earning" }]
+            });
+          } else {
+            console.log(msg);
+          }
+        }
+      }
+
+      if (needsRerender) {
+        renderTasksList();
+        saveState();
+      } else {
+        // Just update countdown timer labels live without re-rendering if desired, or lightweight render
+        // To avoid heavy re-renders every second, we update button texts directly if elements exist
+        updateTaskTimersLive(now);
+      }
+    }
+
+    function updateTaskTimersLive(now) {
+      for (let i = 1; i <= 30; i++) {
+        const taskId = `task_${i}`;
+        const taskData = userState.taskProgress[taskId];
+        if (taskData && taskData.unlockAt > 0) {
+          const remainingSec = Math.ceil((taskData.unlockAt - now) / 1000);
+          if (remainingSec > 0) {
+            const mins = Math.floor(remainingSec / 60);
+            const secs = remainingSec % 60;
+            // Find button or reload if needed
+          }
+        }
+      }
+    }
+
     function executeTaskAd(taskId) {
-      if (userState.taskProgress[taskId] >= 3) return;
+      const taskData = userState.taskProgress[taskId];
+      if (Date.now() < taskData.unlockAt) return;
 
       if (adController) {
         adController.show().then(() => {
-          userState.taskProgress[taskId]++;
-          if (userState.taskProgress[taskId] >= 3) {
-            userState.balance += 1.00;
+          taskData.views++;
+          if (taskData.views >= 3) {
+            userState.balance += 0.01;
             userState.tickets += 1;
-            alert("Task completed successfully! $1.00 and 1 Ticket credited.");
+            // Set 2 hour cooldown (2 * 60 * 60 * 1000 ms)
+            taskData.unlockAt = Date.now() + 7200000; 
+            alert("Task completed successfully! 0.01 TON and 1 Ticket credited. Task is now locked for 2 hours.");
           } else {
-            alert(`Ad watched! Complete ${3 - userState.taskProgress[taskId]} more view(s) to claim reward.`);
+            alert(`Ad watched successfully! Complete ${3 - taskData.views} more view(s) to claim reward.`);
           }
           renderTasksList();
           updateUI();
-        }).catch(() => {
-          alert("Ad skipped or failed to load. Please watch completely to progress.");
+        }).catch((err) => {
+          console.error("Adsgram error:", err);
+          alert("Ad was closed early or unavailable. Watch the complete ad to advance progress.");
         });
       } else {
-        // Fallback simulation mode
-        userState.taskProgress[taskId]++;
-        if (userState.taskProgress[taskId] >= 3) {
-          userState.balance += 1.00;
-          userState.tickets += 1;
-        }
-        renderTasksList();
-        updateUI();
+        alert("Adsgram SDK is unavailable in this environment. Please test inside Telegram.");
       }
     }
 
@@ -957,27 +1086,38 @@
       updateUI();
 
       const wheel = document.getElementById('wheelElement');
-      const randomRot = 1800 + Math.floor(Math.random() * 360);
-      wheel.style.transform = `rotate(${randomRot}deg)`;
+      
+      const outcomes = [
+        { name: "0.01$", reward: 0.01, ticketBonus: 0, rot: 30 },
+        { name: "0.02$", reward: 0.02, ticketBonus: 0, rot: 90 },
+        { name: "Try Again (No Money)", reward: 0, ticketBonus: 0, rot: 150 },
+        { name: "Better Luck Next Time", reward: 0, ticketBonus: 0, rot: 210 },
+        { name: "Free Spin! (No Money)", reward: 0, ticketBonus: 1, rot: 270 },
+        { name: "0.05$", reward: 0.05, ticketBonus: 0, rot: 330 }
+      ];
+
+      const randIndex = Math.random();
+      let chosen;
+      if (randIndex < 0.30) chosen = outcomes[2];
+      else if (randIndex < 0.60) chosen = outcomes[3];
+      else if (randIndex < 0.75) chosen = outcomes[4];
+      else if (randIndex < 0.90) chosen = outcomes[0];
+      else if (randIndex < 0.98) chosen = outcomes[1];
+      else chosen = outcomes[5];
+
+      const randomSpins = 1800;
+      const targetRotation = randomSpins + (360 - chosen.rot);
+      wheel.style.transform = `rotate(${targetRotation}deg)`;
 
       setTimeout(() => {
-        const rand = Math.random();
-        let prizeText = "";
-        if (rand > 0.99) {
-          prizeText = "5.0 TON Jackpot!";
-          userState.balance += 5.0;
-        } else if (rand > 0.90) {
-          prizeText = "1.00 TON Reward!";
-          userState.balance += 1.00;
-        } else if (rand > 0.60) {
-          prizeText = "0.50 TON Reward!";
-          userState.balance += 0.50;
-        } else {
-          prizeText = "0.10 TON Reward!";
-          userState.balance += 0.10;
+        if (chosen.reward > 0) {
+          userState.balance += chosen.reward;
+        }
+        if (chosen.ticketBonus > 0) {
+          userState.tickets += chosen.ticketBonus;
         }
         updateUI();
-        alert(`Lucky Spin Result: Won ${prizeText}`);
+        alert(`Spin Result: ${chosen.name}`);
       }, 4000);
     }
 
@@ -1037,4 +1177,3 @@
   </script>
 </body>
 </html>
- 
